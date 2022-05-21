@@ -1,5 +1,7 @@
 package com.ada.bookings.controller.dto;
 
+import com.ada.bookings.model.Booking;
+
 /**
  * @author <a href="davidh.morenoh@outlook.com">David Moreno Hernandez</a>
  * @version 1.0.0
@@ -7,12 +9,26 @@ package com.ada.bookings.controller.dto;
  **/
 public class BookingDto {
 
+    private String id;
     private String name;
     private String date;
 
-    public BookingDto(String name, String date) {
+    public BookingDto(String id, String name, String date) {
+        this.id = id;
         this.name = name;
         this.date = date;
+    }
+
+    public BookingDto(Booking booking) {
+        this(booking.getId(), booking.getName(), booking.getDate());
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

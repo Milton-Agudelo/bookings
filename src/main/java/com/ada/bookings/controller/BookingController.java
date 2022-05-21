@@ -1,12 +1,13 @@
 package com.ada.bookings.controller;
 
+import com.ada.bookings.controller.dto.BookingDto;
 import com.ada.bookings.model.Booking;
 import com.ada.bookings.service.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author <a href="davidh.morenoh@outlook.com">David Moreno Hernandez</a>
@@ -24,23 +25,27 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Booking> findById(@PathVariable String id) {
-        return iBookingService.findById(id);
+    public BookingDto findById(@PathVariable String id) {
+        return new BookingDto(iBookingService.findById(id).orElseThrow(IllegalArgumentException::new));
     }
 
     @GetMapping("/all")
-    public List<Booking> findAll() {
-        return iBookingService.findAll();
+    public List<BookingDto> findAll() {
+        List<BookingDto> bookingDtoList = new ArrayList<>();
+        for (Booking booking : iBookingService.findAll()) {
+            bookingDtoList.add(new BookingDto(booking));
+        }
+        return bookingDtoList;
     }
 
     @PostMapping("/create")
-    public Booking create(@RequestBody Booking booking) {
-        return iBookingService.create(booking);
+    public BookingDto create(@RequestBody BookingDto bookingDto) {
+        return new BookingDto(iBookingService.create(new Booking(bookingDto)));
     }
 
     @PutMapping("/{id}")
-    public Booking update(@PathVariable String id, @RequestBody Booking booking) {
-        return iBookingService.update(id, booking);
+    public BookingDto update(@PathVariable String id, @RequestBody BookingDto bookingDto) {
+        return new BookingDto(iBookingService.update(id, new Booking(bookingDto)));
     }
 
     @DeleteMapping("/{id}")
