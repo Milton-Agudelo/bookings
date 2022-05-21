@@ -34,8 +34,10 @@ public class ImplBookingService implements IBookingService {
     }
 
     @Override
-    public Booking update(String id, Booking booking) {
-        return bookingList.set(bookingList.indexOf(bookingList.stream().filter(bookingToFind -> bookingToFind.getId().equals(id)).findFirst().orElseThrow(IllegalArgumentException::new)), booking);
+    public Booking update(Booking booking) {
+        Booking bookingToUpdate = bookingList.stream().filter(bookingToFind -> bookingToFind.getId().equals(booking.getId())).findFirst().orElseThrow(IllegalArgumentException::new);
+        bookingList.set(bookingList.indexOf(bookingToUpdate), booking);
+        return booking;
     }
 
     @Override

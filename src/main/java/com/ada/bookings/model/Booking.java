@@ -15,14 +15,14 @@ public class Booking {
     private String name;
     private String date;
 
-    public Booking(String name, String date) {
-        this.id = UUID.randomUUID().toString();
+    public Booking(String id, String name, String date) {
+        this.id = id;
         this.name = name;
         this.date = date;
     }
 
     public Booking(BookingDto bookingDto) {
-        this(bookingDto.getName(), bookingDto.getDate());
+        this(bookingDto.getId() != null ? bookingDto.getId() : UUID.randomUUID().toString(), bookingDto.getName(), bookingDto.getDate());
     }
 
     public String getId() {

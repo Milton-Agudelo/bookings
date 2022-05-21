@@ -18,7 +18,7 @@ public interface IBookingService {
 
     List<Booking> findAll();
 
-    Booking update(String id, Booking booking);
+    Booking update(Booking booking);
 
     void delete(String id);
 
