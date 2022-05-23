@@ -33,4 +33,17 @@ public class ImplBookingService implements IBookingService {
         return bookingModels;
     }
 
+    @Override
+    public BookingModel update(BookingModel bookingModel) {
+        BookingModel bookingModelToUpdate = bookingModels.stream().filter(bookingToFind -> bookingToFind.getId().equals(
+            bookingModel.getId())).findFirst().orElseThrow(IllegalArgumentException::new);
+        bookingModels.set(bookingModels.indexOf(bookingModelToUpdate), bookingModel);
+        return bookingModels.stream().filter(bookingToFind -> bookingToFind.getId().equals(
+            bookingModel.getId())).findFirst().orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Override
+    public void delete(String id) {
+        bookingModels.remove(bookingModels.stream().filter(bookingToFind -> bookingToFind.getId().equals(id)).findFirst().orElseThrow(IllegalArgumentException::new));
+    }
 }
