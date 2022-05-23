@@ -18,4 +18,8 @@ public interface IBookingService {
 
     List<BookingModel> findAll();
 
+    BookingModel update(BookingModel bookingModel);
+
+    void delete(String id);
+
 }

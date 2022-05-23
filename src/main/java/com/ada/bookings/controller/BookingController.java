@@ -43,4 +43,14 @@ public class BookingController {
         return bookingDtos;
     }
 
+    @PutMapping("/{id}")
+    public BookingDto update(@PathVariable String id, @RequestBody BookingDto bookingDto) {
+        bookingDto.setId(id);
+        return new BookingDto(iBookingService.update(new BookingModel(bookingDto)));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
+        iBookingService.delete(id);
+    }
 }
