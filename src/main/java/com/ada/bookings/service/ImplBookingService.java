@@ -1,9 +1,10 @@
 package com.ada.bookings.service;
 
-import com.ada.bookings.model.BookingModel;
+import com.ada.bookings.entity.BookingEntity;
+import com.ada.bookings.repository.IBookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,35 +16,37 @@ import java.util.Optional;
 @Service
 public class ImplBookingService implements IBookingService {
 
-    private final List<BookingModel> bookingModels = new ArrayList<>();
+    private final IBookingRepository iBookingRepository;
 
-    @Override
-    public BookingModel create(BookingModel bookingModel) {
-        bookingModels.add(bookingModel);
-        return bookingModel;
+    public ImplBookingService(@Autowired IBookingRepository iBookingRepository) {
+        this.iBookingRepository = iBookingRepository;
     }
 
     @Override
-    public Optional<BookingModel> findById(String id) {
-        return bookingModels.stream().filter(bookingModel -> bookingModel.getId().equals(id)).findFirst();
+    public BookingEntity create(BookingEntity bookingEntity) {
+        return iBookingRepository.save(bookingEntity);
     }
 
     @Override
-    public List<BookingModel> findAll() {
-        return bookingModels;
+    public Optional<BookingEntity> findById(Long id) {
+        return iBookingRepository.findById(id);
     }
 
     @Override
-    public BookingModel update(BookingModel bookingModel) {
-        BookingModel bookingModelToUpdate = bookingModels.stream().filter(bookingToFind -> bookingToFind.getId().equals(
-            bookingModel.getId())).findFirst().orElseThrow(IllegalArgumentException::new);
-        bookingModels.set(bookingModels.indexOf(bookingModelToUpdate), bookingModel);
-        return bookingModels.stream().filter(bookingToFind -> bookingToFind.getId().equals(
-            bookingModel.getId())).findFirst().orElseThrow(IllegalArgumentException::new);
+    public List<BookingEntity> findAll() {
+        return iBookingRepository.findAll();
     }
 
     @Override
-    public void delete(String id) {
-        bookingModels.remove(bookingModels.stream().filter(bookingToFind -> bookingToFind.getId().equals(id)).findFirst().orElseThrow(IllegalArgumentException::new));
+    public BookingEntity update(Long id, BookingEntity bookingEntity) {
+        Optional<BookingEntity> optionalBookingEntity = iBookingRepository.findById(id);
+        bookingEntity.setId(optionalBookingEntity.orElseThrow(NullPointerException::new).getId());
+        return iBookingRepository.save(bookingEntity);
     }
+
+    @Override
+    public void delete(Long id) {
+        iBookingRepository.deleteById(id);
+    }
+
 }

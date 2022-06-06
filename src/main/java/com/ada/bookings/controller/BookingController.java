@@ -1,9 +1,11 @@
 package com.ada.bookings.controller;
 
 import com.ada.bookings.controller.dto.BookingDto;
-import com.ada.bookings.model.BookingModel;
+import com.ada.bookings.entity.BookingEntity;
 import com.ada.bookings.service.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.List;
  * @since 1.0.0
  **/
 @RestController
-@RequestMapping("/v1/bookings")
+@RequestMapping("/v1/bookings/")
 public class BookingController {
 
     private final IBookingService iBookingService;
@@ -24,33 +26,34 @@ public class BookingController {
         this.iBookingService = iBookingService;
     }
 
-    @PostMapping("/create")
-    public BookingDto create(@RequestBody BookingDto bookingDto) {
-        return new BookingDto(iBookingService.create(new BookingModel(bookingDto)));
+    @PostMapping
+    public ResponseEntity<BookingDto> create(@RequestBody BookingDto bookingDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BookingDto(iBookingService.create(new BookingEntity(bookingDto))));
     }
 
-    @GetMapping("/{id}")
-    public BookingDto findById(@PathVariable String id) {
-        return new BookingDto(iBookingService.findById(id).orElseThrow(IllegalArgumentException::new));
+    @GetMapping("{id}")
+    public ResponseEntity<BookingDto> findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(new BookingDto(iBookingService.findById(id).orElseThrow(IllegalArgumentException::new)));
     }
 
-    @GetMapping("/all")
-    public List<BookingDto> findAll() {
+    @GetMapping
+    public ResponseEntity<List<BookingDto>> findAll() {
         List<BookingDto> bookingDtos = new ArrayList<>();
-        for (BookingModel bookingModel : iBookingService.findAll()) {
-            bookingDtos.add(new BookingDto(bookingModel));
+        for (BookingEntity bookingEntity : iBookingService.findAll()) {
+            bookingDtos.add(new BookingDto(bookingEntity));
         }
-        return bookingDtos;
+        return ResponseEntity.status(HttpStatus.OK).body(bookingDtos);
     }
 
-    @PutMapping("/{id}")
-    public BookingDto update(@PathVariable String id, @RequestBody BookingDto bookingDto) {
-        bookingDto.setId(id);
-        return new BookingDto(iBookingService.update(new BookingModel(bookingDto)));
+    @PutMapping("{id}")
+    public ResponseEntity<BookingDto> update(@PathVariable Long id, @RequestBody BookingDto bookingDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(new BookingDto(iBookingService.update(id, new BookingEntity(bookingDto))));
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         iBookingService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 }

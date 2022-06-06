@@ -1,6 +1,6 @@
 package com.ada.bookings.service;
 
-import com.ada.bookings.model.BookingModel;
+import com.ada.bookings.entity.BookingEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,14 +12,14 @@ import java.util.Optional;
  **/
 public interface IBookingService {
 
-    BookingModel create(BookingModel bookingModel);
+    BookingEntity create(BookingEntity bookingEntity);
 
-    Optional<BookingModel> findById(String id);
+    Optional<BookingEntity> findById(Long id);
 
-    List<BookingModel> findAll();
+    List<BookingEntity> findAll();
 
-    BookingModel update(BookingModel bookingModel);
+    BookingEntity update(Long id, BookingEntity bookingEntity);
 
-    void delete(String id);
+    void delete(Long id);
 
 }
