@@ -1,4 +1,4 @@
-package com.ada.bookings.service;
+package com.ada.bookings.service.bookings;
 
 import com.ada.bookings.entity.BookingEntity;
 import com.ada.bookings.repository.IBookingRepository;

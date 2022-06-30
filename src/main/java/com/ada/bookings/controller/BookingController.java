@@ -2,7 +2,7 @@ package com.ada.bookings.controller;
 
 import com.ada.bookings.controller.dto.BookingDto;
 import com.ada.bookings.entity.BookingEntity;
-import com.ada.bookings.service.IBookingService;
+import com.ada.bookings.service.bookings.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
