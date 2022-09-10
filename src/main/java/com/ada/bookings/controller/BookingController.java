@@ -1,13 +1,17 @@
 package com.ada.bookings.controller;
 
 import com.ada.bookings.controller.dto.BookingDto;
-import com.ada.bookings.model.Booking;
+import com.ada.bookings.entity.BookingEntity;
 import com.ada.bookings.service.IBookingService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="davidh.morenoh@outlook.com">David Moreno Hernandez</a>
@@ -15,7 +19,7 @@ import java.util.List;
  * @since 1.0.0
  **/
 @RestController
-@RequestMapping("/v1/bookings")
+@RequestMapping("/v1/bookings/")
 public class BookingController {
 
     private final IBookingService iBookingService;
@@ -24,34 +28,56 @@ public class BookingController {
         this.iBookingService = iBookingService;
     }
 
-    @GetMapping("/{id}")
-    public BookingDto findById(@PathVariable String id) {
-        return new BookingDto(iBookingService.findById(id).orElseThrow(IllegalArgumentException::new));
+
+    @ApiOperation(value = "This method is used to get the clients.")
+    @GetMapping
+    public List<BookingEntity> getClients() {
+        return iBookingService.findAll();
     }
 
-    @GetMapping("/all")
-    public List<BookingDto> findAll() {
-        List<BookingDto> bookingDtoList = new ArrayList<>();
-        for (Booking booking : iBookingService.findAll()) {
-            bookingDtoList.add(new BookingDto(booking));
+    @PostMapping
+    public ResponseEntity<BookingEntity> create(@RequestBody BookingDto bookingDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(iBookingService.create(new BookingEntity(bookingDto)));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<BookingEntity> findById(@PathVariable String id) {
+        ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User with id: '" + id + "' can not be found!");
+        Optional<BookingEntity> booking = iBookingService.findById(id);
+        if (!booking.equals(Optional.empty())) {
+            responseEntity = ResponseEntity.status(HttpStatus.OK).body(iBookingService.findById(id).get());
         }
-        return bookingDtoList;
+        return responseEntity;
     }
 
-    @PostMapping("/create")
-    public BookingDto create(@RequestBody BookingDto bookingDto) {
-        return new BookingDto(iBookingService.create(new Booking(bookingDto)));
+    @GetMapping("findAll/")
+    public ResponseEntity<List<BookingEntity>> findAll() {
+        List bookingList = new ArrayList();
+        for (BookingEntity bookingEntity : iBookingService.findAll()) {
+            bookingList.add(bookingEntity);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(bookingList);
     }
 
-    @PutMapping("/{id}")
-    public BookingDto update(@PathVariable String id, @RequestBody BookingDto bookingDto) {
-        bookingDto.setId(id);
-        return new BookingDto(iBookingService.update(new Booking(bookingDto)));
+    @PutMapping("{id}")
+    public ResponseEntity<BookingEntity> update(@PathVariable String id, @RequestBody BookingDto bookingDto) {
+        ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User with id: '" + id + "' can not be found!");
+        BookingEntity bookingEntity = new BookingEntity(bookingDto);
+        if (iBookingService.update(id, bookingEntity)) {
+            responseEntity = ResponseEntity.status(HttpStatus.OK).body(iBookingService.findById(id).get());
+        }
+        return responseEntity;
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
-        iBookingService.delete(id);
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User with id: '" + id + "' can not be found!");
+
+        if (!iBookingService.findById(id).equals(Optional.empty())) {
+            iBookingService.deleteById(id);
+            responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return responseEntity;
     }
 
 }
