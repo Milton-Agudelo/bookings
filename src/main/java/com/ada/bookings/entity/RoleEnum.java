@@ -5,7 +5,7 @@ package com.ada.bookings.entity;
  * @version 1.0.0
  * @since 1.0.0
  **/
-public enum RolesEnum {
+public enum RoleEnum {
 
     ADMIN, USER
 

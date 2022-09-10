@@ -1,8 +1,10 @@
 package com.ada.bookings.controller.dto;
 
-import com.ada.bookings.entity.BookingEntity;
-import lombok.AllArgsConstructor;
+import com.ada.bookings.entity.RoleEnum;
 import lombok.Data;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author <a href="davidh.morenoh@outlook.com">David Moreno Hernandez</a>
@@ -10,16 +12,15 @@ import lombok.Data;
  * @since 1.0.0
  **/
 @Data
-@AllArgsConstructor
 public class BookingDto {
 
-    private Long id;
+    private String id;
     private String name;
     private String date;
     private String author;
-
-    public BookingDto(BookingEntity bookingEntity) {
-        this(bookingEntity.getId(), bookingEntity.getName(), bookingEntity.getDate(), bookingEntity.getAuthor());
-    }
+    private String email;
+    private String password;
+    private List<RoleEnum> roles;
+    private Date createdAt;
 
 }

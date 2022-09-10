@@ -1,4 +1,4 @@
-package com.ada.bookings.service.bookings;
+package com.ada.bookings.service;
 
 import com.ada.bookings.entity.BookingEntity;
 
@@ -14,12 +14,14 @@ public interface IBookingService {
 
     BookingEntity create(BookingEntity bookingEntity);
 
-    Optional<BookingEntity> findById(Long id);
+    Optional<BookingEntity> findById(String id);
+
+    BookingEntity findByEmail(String email);
 
     List<BookingEntity> findAll();
 
-    BookingEntity update(Long id, BookingEntity bookingEntity);
+    boolean update(String id, BookingEntity bookingEntity);
 
-    void delete(Long id);
+    boolean deleteById(String id);
 
 }

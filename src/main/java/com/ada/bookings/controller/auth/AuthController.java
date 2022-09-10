@@ -1,9 +1,9 @@
 package com.ada.bookings.controller.auth;
 
 import com.ada.bookings.controller.security.JWTGenerate;
-import com.ada.bookings.entity.UserEntity;
+import com.ada.bookings.entity.BookingEntity;
 import com.ada.bookings.exceptions.InvalidCredentialsException;
-import com.ada.bookings.service.users.ImplUserService;
+import com.ada.bookings.service.BookingServiceMongoDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 1.0.0
  **/
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 public class AuthController {
 
     private final JWTGenerate jwtGenerate;
-    private final ImplUserService implUserService;
+    private final BookingServiceMongoDb bookingService;
+    //@Autowired
+    //bookingServiceMongoDb bookingService;
 
-    public AuthController(@Autowired ImplUserService implUserService, @Autowired JWTGenerate jwtGenerate) {
-        this.implUserService = implUserService;
+    public AuthController(@Autowired BookingServiceMongoDb bookingService, @Autowired JWTGenerate jwtGenerate) {
+        this.bookingService = bookingService;
         this.jwtGenerate = jwtGenerate;
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
-        UserEntity user = implUserService.findByEmail(request.getEmail());
+        BookingEntity booking = bookingService.findByEmail(request.getEmail());
         String jwt = "";
-        if (BCrypt.checkpw(request.getPassword(), user.getPasswordHash())) {
-            jwt = jwtGenerate.generateTokenv2(user);
+       if (BCrypt.checkpw(request.getPassword(), booking.getPasswordHash())) {
+            jwt = jwtGenerate.generateTokenv2(booking);
             return new ResponseEntity<>(new AuthenticationResponse(jwt), HttpStatus.OK);
         } else {
             throw new InvalidCredentialsException();

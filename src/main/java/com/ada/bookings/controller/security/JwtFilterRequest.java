@@ -1,7 +1,6 @@
 package com.ada.bookings.controller.security;
 
-import com.ada.bookings.entity.UserEntity;
-import com.ada.bookings.service.users.ImplUserService;
+import com.ada.bookings.service.BookingServiceMongoDb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,7 @@ public class JwtFilterRequest extends OncePerRequestFilter {
     private JWTGenerate jwtGenerate;
 
     @Autowired
-    private ImplUserService implUserService;
+    private BookingServiceMongoDb bookingServiceMongoDb;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -34,8 +33,7 @@ public class JwtFilterRequest extends OncePerRequestFilter {
             String jwt = autorizationHeader.substring(7);
             String email = jwtGenerate.getEmail(jwt);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserEntity user = implUserService.findByEmail(email);
-                if (jwtGenerate.validateToken(jwt, user)) {
+                if (jwtGenerate.validateToken(jwt, bookingServiceMongoDb.findByEmail(email))) {
                     SecurityContextHolder.getContext().setAuthentication(new TokenAuthentication(jwt, email, null));
                     request.setAttribute("claims", jwtGenerate.getClaim(jwt));
                     request.setAttribute("subject", jwtGenerate.getClaim(jwt).getSubject());

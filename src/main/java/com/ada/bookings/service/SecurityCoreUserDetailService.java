@@ -1,6 +1,6 @@
 package com.ada.bookings.service;
 
-import com.ada.bookings.repository.IUserRepository;
+import com.ada.bookings.repository.IBookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,17 +16,17 @@ import java.util.ArrayList;
  * @since 1.0.0
  **/
 @Service
-public class UserSecurityDetailService implements UserDetailsService {
+public class SecurityCoreUserDetailService implements UserDetailsService {
 
-    private final IUserRepository iUserRepository;
+    private final IBookingRepository iBookingRepository;
 
-    public UserSecurityDetailService(@Autowired IUserRepository iUserRepository) {
-        this.iUserRepository = iUserRepository;
+    public SecurityCoreUserDetailService(@Autowired IBookingRepository iBookingRepository) {
+        this.iBookingRepository = iBookingRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new User("Luisa", "{noop}123", new ArrayList<>());
+        return new User("Milton", "M1lt0n4gudel0", new ArrayList<>());
     }
 
 }
